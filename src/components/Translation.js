@@ -30,11 +30,11 @@ function Translation() {
             Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4.1",
             messages: [
               {
                 role: "system",
-                content: "You are a helpful translation assistant.",
+                content: "You are a translation assistant. Only return the translated text. Do not add any explanation, extra words, or prefixes.",
               },
               {
                 role: "user",
