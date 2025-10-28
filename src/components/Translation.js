@@ -1,8 +1,4 @@
 import React, { useState } from "react";
-import parrot from "../assets/parrot.png";
-import franceFlag from "../assets/french.png";
-import spanishFlag from "../assets/spanish.png";
-import japaneseFlag from "../assets/japanese.png";
 
 function Translation() {
   const [originalText, setOriginalText] = useState("");
@@ -38,8 +34,7 @@ function Translation() {
             messages: [
               {
                 role: "system",
-                content:
-                  "You are a translation assistant. Only return the translated text. Do not add any explanation, extra words, or prefixes.",
+                content: "You are a translation assistant. Only return the translated text. Do not add any explanation, extra words, or prefixes.",
               },
               {
                 role: "user",
@@ -76,23 +71,34 @@ function Translation() {
     setError("");
   };
 
+  const getFlag = () => {
+    switch (language) {
+      case "french":
+        return "🇫🇷";
+      case "spanish":
+        return "🇪🇸";
+      case "japanese":
+        return "🇯🇵";
+      default:
+        return "🇪🇸";
+    }
+  };
+
   return (
     <div className="app-container">
       <div className="container">
         <div className="header">
-          <img src={parrot} alt="Parrot" className="header-img" />
+          <h1>
+            <i className="fas fa-language"></i> PollyGlot
+          </h1>
+          <p>AI-powered translation in seconds</p>
         </div>
 
         <div className="content">
           {!translatedText ? (
             <form onSubmit={handleTranslate}>
               <div className="input-group">
-                <label
-                  htmlFor="text-to-translate"
-                  className="text-to-translate"
-                >
-                  Text to translate 👇
-                </label>
+                <label htmlFor="text-to-translate">Text to translate</label>
                 <textarea
                   id="text-to-translate"
                   className="input-field"
@@ -103,7 +109,7 @@ function Translation() {
               </div>
 
               <div className="language-selector">
-                <h3 className="target-language">Select target language 👇</h3>
+                <h3>Select target language</h3>
                 <div className="languages">
                   <div className="language-option">
                     <input
@@ -115,12 +121,8 @@ function Translation() {
                       onChange={() => setLanguage("french")}
                     />
                     <label htmlFor="french">
-                      French{" "}
-                      <img
-                        src={franceFlag}
-                        alt="France Flag"
-                        className="flag-icon"
-                      />
+                      <i className="fas fa-flag"></i>
+                      <span>French</span>
                     </label>
                   </div>
                   <div className="language-option">
@@ -133,12 +135,8 @@ function Translation() {
                       onChange={() => setLanguage("spanish")}
                     />
                     <label htmlFor="spanish">
-                      Spanish{" "}
-                      <img
-                        src={spanishFlag}
-                        alt="Spanish Flag"
-                        className="flag-icon"
-                      />
+                      <i className="fas fa-flag-usa"></i>
+                      <span>Spanish</span>
                     </label>
                   </div>
                   <div className="language-option">
@@ -151,12 +149,8 @@ function Translation() {
                       onChange={() => setLanguage("japanese")}
                     />
                     <label htmlFor="japanese">
-                      Japanese{" "}
-                      <img
-                        src={japaneseFlag}
-                        alt="Japanese Flag"
-                        className="flag-icon"
-                      />
+                      <i className="fas fa-flag"></i>
+                      <span>Japanese</span>
                     </label>
                   </div>
                 </div>
@@ -175,13 +169,19 @@ function Translation() {
           ) : (
             <div className="results">
               <div className="result-item">
-                <h3>Original text 👇</h3>
+                <h3>Original text</h3>
                 <div className="translation-box">{originalText}</div>
               </div>
 
               <div className="result-item">
-                <h3 className="translation">Your translation 👇</h3>
+                <h3>Your translation</h3>
                 <div className="translation-box">{translatedText}</div>
+              </div>
+
+              <div className="flags">
+                <div className="flag">🇺🇸</div>
+                <div className="flag">➡️</div>
+                <div className="flag">{getFlag()}</div>
               </div>
 
               <button className="btn-start-over" onClick={handleReset}>
