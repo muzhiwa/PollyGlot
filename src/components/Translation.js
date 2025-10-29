@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import OpenAI from "openai";
 import parrot from "../assets/parrot.png";
 import franceFlag from "../assets/french.png";
 import spanishFlag from "../assets/spanish.png";
@@ -23,47 +24,38 @@ function Translation() {
     setLoading(true);
 
     try {
-      const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+      // ✅ Initialize OpenAI client (Groq-compatible)
+      const client = new OpenAI({
+        apiKey: process.env.REACT_APP_GROQ_API_KEY,
+        baseURL: "https://api.groq.com/openai/v1",
+        dangerouslyAllowBrowser: true, // ⚠️ Required in React
+      });
 
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
+      // ✅ Send translation request
+      const response = await client.chat.completions.create({
+        model: "openai/gpt-oss-20b", // Groq model
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a translation assistant. Only return the translated text. No explanations or extra words.",
           },
-          body: JSON.stringify({
-            model: "gpt-4.1",
-            messages: [
-              {
-                role: "system",
-                content:
-                  "You are a translation assistant. Only return the translated text. Do not add any explanation, extra words, or prefixes.",
-              },
-              {
-                role: "user",
-                content: `Translate the following text to ${language}: ${originalText}`,
-              },
-            ],
-            max_tokens: 50,
-            temperature: 0.7,
-          }),
-        }
-      );
-
-      const data = await response.json();
-      console.log("API response:", data);
+          {
+            role: "user",
+            content: `Translate the following text to ${language}: ${originalText}`,
+          },
+        ],
+      });
 
       const translation =
-        data.choices?.[0]?.message?.content ||
+        response.choices?.[0]?.message?.content ||
         "⚠️ Error: No translation returned.";
 
       setTranslatedText(translation);
-    } catch (error) {
-      console.error("Translation error:", error);
+    } catch (err) {
+      console.error("Translation error:", err);
       setError(
-        "⚠️ Error: Could not fetch translation. Please check your API key and billing."
+        "⚠️ Could not fetch translation. Check your API key or network."
       );
     } finally {
       setLoading(false);
